@@ -3535,7 +3535,7 @@ e.read=function(t,e,r,n,o){var i,s,a=8*o-n-1,l=(1<<a)-1,c=l>>1,h=-7,u=r?o-1:0,d=
               `}
         </div>
       </div>
-    `}};ho.styles=lo,Lt([Rt({type:Number,reflect:!0})],ho.prototype,"value",2),Lt([Rt({type:Boolean,reflect:!0})],ho.prototype,"indeterminate",2),Lt([Rt()],ho.prototype,"label",2),Lt([Rt()],ho.prototype,"lang",2),ho=Lt([Nt("sl-progress-bar")],ho),Ie("/shoelace");
+    `}};ho.styles=lo,Lt([Rt({type:Number,reflect:!0})],ho.prototype,"value",2),Lt([Rt({type:Boolean,reflect:!0})],ho.prototype,"indeterminate",2),Lt([Rt()],ho.prototype,"label",2),Lt([Rt()],ho.prototype,"lang",2),ho=Lt([Nt("sl-progress-bar")],ho),Ie("./shoelace");
 /**
  * @license
  * Copyright 2019 Google LLC
