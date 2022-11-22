@@ -21,3 +21,17 @@ web via a Cloudflare Worker. This allows the system to load any website without 
 However, this only works with sites that are loadable through Cloudflare.
 
 All network traffic goes through the Cloudflare Worker, so this is not ideal for archiving non-public content.
+
+## Development
+
+Install dependencies:
+```
+yarn
+```
+
+Start dev server:
+```
+yarn start-dev
+```
+
+Open in your browser: <http://localhost:10001>
