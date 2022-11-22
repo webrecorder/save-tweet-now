@@ -111,7 +111,7 @@ export default class LiveWebRecorder extends LitElement
 
   handleHashChange(q) {
     this.url = this.validateUrl(q.get("url") || DEFAULT_URL);
-    this.autoupload = q.get("autoupload") === "1";
+    this.autoupload = (q.get("autoupload") === "1");
 
     this.initCollection();
   }
