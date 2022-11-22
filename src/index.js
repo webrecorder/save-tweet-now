@@ -6,6 +6,8 @@ import { Web3Uploader } from "./web3";
 
 const VERSION = __AWP_EXPRESS_VERSION__;
 
+const DEFAULT_URL = "https://twitter.com/IlyaKreymer/status/1590912407823843329";
+
 
 // ===========================================================================
 export default class LiveWebRecorder extends LitElement
@@ -24,6 +26,8 @@ export default class LiveWebRecorder extends LitElement
     this.size = 0;
     this.uploadProgress = 0;
 
+    this.autoupload = false;
+
     this.collReady = false;
     this.collAwait = null;
 
@@ -38,6 +42,7 @@ export default class LiveWebRecorder extends LitElement
 
       loading: { type: Boolean },
       uploading: { type: Boolean },
+      autoupload: { type: Boolean },
       
       opts: { type: Object },
       inited: { type: Boolean },
@@ -56,14 +61,6 @@ export default class LiveWebRecorder extends LitElement
       proxyPrefix: { type: String },
 
       publicKey: { type: String },
-
-      fullscreen: { type: Boolean },
-      showAbout: { type: Boolean },
-      showPublicKey: { type: Boolean },
-
-      crawlState: { type: Object },
-      crawlSameOriginOnly: { type: Boolean },
-      crawlSelector: { type: String },
     };
   }
 
@@ -85,13 +82,9 @@ export default class LiveWebRecorder extends LitElement
         this.hashUpdate = false;
         return;
       }
-      const m = window.location.hash.slice(1).match(/\/?(?:([\d]+)\/)?(.*)/);
+      const q = new URLSearchParams(window.location.hash.slice(1));
       
-      if (!m) {
-        return;
-      }
-
-      this.handleHashChange(m);
+      this.handleHashChange(q);
     };
 
     window.addEventListener("hashchange", () => onHashChange());
@@ -116,8 +109,10 @@ export default class LiveWebRecorder extends LitElement
     }
   }
 
-  handleHashChange(m) {
-    this.url = this.validateUrl(m[2] || "https://twitter.com/IlyaKreymer/status/1590912407823843329");
+  handleHashChange(q) {
+    this.url = this.validateUrl(q.get("url") || DEFAULT_URL);
+    this.autoupload = q.get("autoupload") === "1";
+
     this.initCollection();
   }
 
@@ -146,7 +141,9 @@ export default class LiveWebRecorder extends LitElement
 
   markAsDone() {
     console.log("done?");
-    this.onUpload();
+    if (this.autoupload) {
+      this.onUpload();
+    }
   }
 
   async initSW() {
@@ -197,12 +194,16 @@ export default class LiveWebRecorder extends LitElement
     }
 
     this.hashUpdate = true;
-    window.location.hash = `#${this.url}`;
+    //window.location.hash = `#${this.url}`;
+    const q = new URLSearchParams();
+    q.set("url", this.url);
+    if (this.autoupload) {
+      q.set("autoupload", "1");
+    }
+    window.location.hash = `#${q.toString()}`;
 
     this.collReady = false;
     this.loading = true;
-    this.crawler = null;
-    this.crawlState = null;
 
     new Promise((resolve) => {
       this.collAwait = resolve;
@@ -265,7 +266,7 @@ export default class LiveWebRecorder extends LitElement
     <div>
     <sl-form @sl-submit="${this.onUpdateUrl}" class="grid grid-cols-1 gap-3 mb-4 mt-2">
       <div class="flex">
-        <sl-input class="rounded w-full" id="url" placeholder="Enter URL To load" .value="${this.url}">
+        <sl-input class="rounded w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}">
         </sl-input>
       </div>
     </sl-form>
@@ -387,6 +388,9 @@ export default class LiveWebRecorder extends LitElement
   }
 
   validateUrl(url) {
+    if (!url) {
+      return "";
+    }
     if (url.startsWith(this.oembedPrefix)) {
       url = url.slice(this.oembedPrefix.length);
     }
