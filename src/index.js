@@ -45,6 +45,7 @@ export default class LiveWebRecorder extends LitElement
       loading: { type: Boolean },
       uploading: { type: Boolean },
       autoupload: { type: Boolean },
+      isDone: { type: Boolean },
       
       opts: { type: Object },
       inited: { type: Boolean },
@@ -299,7 +300,7 @@ export default class LiveWebRecorder extends LitElement
     return html`
     <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived.</div>
       <div class="mt-3 leading-tight break-all text-center">
-        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" class="text-blue-500 hover:text-blue-600 transition-colors">
+        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
           Download Archived Tweet
         </a>
       </div>

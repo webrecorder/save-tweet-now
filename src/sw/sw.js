@@ -5,7 +5,7 @@ import { tsToDate } from "@webrecorder/wabac/src/utils";
 
 import { ExtAPI } from "@webrecorder/archivewebpage/src/sw/api";
 import { RecordingCollections } from "@webrecorder/archivewebpage/src/sw/recproxy";
-import { Signer } from "@webrecorder/archivewebpage/src/keystore";
+import { Signer } from "@webrecorder/archivewebpage/src/sw/keystore";
 
 
 // ===========================================================================
