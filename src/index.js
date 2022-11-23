@@ -15,7 +15,6 @@ export default class LiveWebRecorder extends LitElement
 {
   constructor() {
     super();
-    this.archivePrefix = "https://web.archive.org/web/";
     this.proxyPrefix = "https://wabac-cors-proxy.webrecorder.workers.dev/proxy/";
 
     this.oembedPrefix = "https://oembed.link/";
