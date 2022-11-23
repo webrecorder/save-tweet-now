@@ -287,6 +287,15 @@ export default class LiveWebRecorder extends LitElement
       `
     }
 
+    if (!this.isDone) {
+      return html`
+      <div>
+        <sl-spinner class="text-[7rem]"></sl-spinner>
+      </div>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
+      `
+    }
+
     return html`
     <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived.</div>
       <div class="mt-3 leading-tight break-all text-center">

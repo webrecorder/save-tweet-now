@@ -1,6 +1,7 @@
 :root {
   --sl-color-primary-600: #0366d6;
   --background-color: #fafbfc;
+  --indicator-color: #2188ff;
 }
 
 * {
@@ -20,7 +21,10 @@ body {
 
 sl-spinner {
   --track-width: 3px;
-  --indicator-color: #2188ff;
+}
+
+sl-progress-bar {
+  --height: 9px;
 }
 
 .tweetWrapper {
