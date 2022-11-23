@@ -228,11 +228,11 @@ export default class LiveWebRecorder extends LitElement
       <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
     </header>
     ${!this.cidLink && !this.uploading ? html`
-      <div class="text-center mb-12">
+      <div class="text-center mb-8">
         ${this.renderURLInput()}
       </div>
     ` : html`
-      <div class="panel flex flex-col items-center p-8 mb-12 shadow-sm">
+      <div class="panel flex flex-col items-center p-8 mb-8 shadow-sm">
         ${this.renderDownloadControls()}
       </div>
     `}
