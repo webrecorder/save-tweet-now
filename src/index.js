@@ -318,7 +318,7 @@ export default class LiveWebRecorder extends LitElement
   renderContent() {
     if (this.collReady && this.iframeUrl) {
       return html`
-      <iframe name="" src="${this.iframeUrl}"
+      <iframe name="" src="${this.iframeUrl}" class="tweet"
       @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
       ></iframe>
       `

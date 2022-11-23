@@ -22,3 +22,8 @@ sl-spinner {
   --track-width: 3px;
   --indicator-color: #2188ff;
 }
+
+.tweet {
+  min-height: 600px;
+  overflow: auto;
+}
