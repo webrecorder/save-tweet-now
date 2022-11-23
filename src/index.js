@@ -225,25 +225,10 @@ export default class LiveWebRecorder extends LitElement
   render() {
     return html`
     <header class="mb-8">
-      <h1 class="my-0 leading-none font-semibold text-[2rem]">Save Tweet Now</h1>
+      <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
     </header>
     <div class="panel flex flex-col items-center p-8 mb-12 shadow-sm">
-      <div>
-        <sl-button type="primary" size="large">Archive Tweet!</sl-button>
-      </div>
-      <sl-spinner class="text-[7rem]"></sl-spinner>
-      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
-      <div class="mt-3 text-sm leading-none text-neutral-700">Saving Archive</div>
-      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
-      <div class="mt-3 leading-none">
-        <a href="" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
-          link
-        </a>
-      </div>
-      <div class="mt-6">
-        <sl-button type="primary" size="large">Download Archived Tweet</sl-button>
-      </div>
-      <!-- ${this.renderControls()} -->
+      ${this.renderDownloadControls()}
     </div>
     <div class="panel mb-12">
       ${this.renderContent()}
@@ -252,6 +237,37 @@ export default class LiveWebRecorder extends LitElement
       footer
     </footer>
     `;
+  }
+
+  renderDownloadControls() {
+    if (this.cidLink) {
+      return html`
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
+      <div class="mt-3 leading-tight break-all text-center">
+        <a href=${this.cidLink} target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
+          ${this.cidLink}
+        </a>
+      </div>
+      <div class="mt-6">
+        <sl-button type="primary" size="large" href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}">
+          Download Archived Tweet
+        </sl-button>
+      </div>
+      `
+    }
+    if (this.uploading) {
+      return html`
+      <sl-spinner class="text-[7rem]"></sl-spinner>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
+      <div class="mt-3 text-sm leading-none text-neutral-700">Saving Archive</div>
+      `
+    }
+
+    return html`
+      <div>
+        <sl-button type="primary" size="large" @click=${this.onUpload}>Archive Tweet!</sl-button>
+      </div>
+    `
   }
 
   renderControls() {
