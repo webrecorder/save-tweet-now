@@ -239,9 +239,8 @@ export default class LiveWebRecorder extends LitElement
     <div class="mb-12">
       ${this.renderContent()}
     </div>
-    <footer class="mb-10">
-      footer
-    </footer>
+    <!-- <footer class="mb-10">
+    </footer> -->
     `;
   }
 
