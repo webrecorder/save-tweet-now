@@ -227,10 +227,16 @@ export default class LiveWebRecorder extends LitElement
     <header class="mb-8">
       <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
     </header>
-    <div class="panel flex flex-col items-center p-8 mb-12 shadow-sm">
-      ${this.renderDownloadControls()}
-    </div>
-    <div class="panel mb-12">
+    ${!this.cidLink && !this.uploading ? html`
+      <div class="text-center mb-12">
+        ${this.renderURLInput()}
+      </div>
+    ` : html`
+      <div class="panel flex flex-col items-center p-8 mb-12 shadow-sm">
+        ${this.renderDownloadControls()}
+      </div>
+    `}
+    <div class="mb-12">
       ${this.renderContent()}
     </div>
     <footer class="mb-10">
@@ -263,8 +269,16 @@ export default class LiveWebRecorder extends LitElement
       `
     }
 
+    return ""
+  }
+  
+  renderURLInput() {
     return html`
-      <div>
+      <sl-form @sl-submit="${this.onUpdateUrl}" class="block w-full">
+        <sl-input class="w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}">
+        </sl-input>
+      </sl-form>
+      <div class="mt-6">
         <sl-button type="primary" size="large" @click=${this.onUpload}>Archive Tweet!</sl-button>
       </div>
     `
@@ -303,25 +317,14 @@ export default class LiveWebRecorder extends LitElement
   }
 
   renderContent() {
-    console.log(this.collReady, this.iframeUrl)
-    return html`
-    <div>
-    <sl-form @sl-submit="${this.onUpdateUrl}" class="grid grid-cols-1 gap-3 mb-4 mt-2">
-      <div class="flex">
-        <sl-input class="rounded w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}">
-        </sl-input>
-      </div>
-    </sl-form>
-
-    ${this.collReady && this.iframeUrl ? html`
-    <iframe name="" src="${this.iframeUrl}"
-    @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    ></iframe>
-
-    ` : html`
-    <div>Sorry, only Twitter URLs can be loaded</div>
-    `}
-  </div>`
+    if (this.collReady && this.iframeUrl) {
+      return html`
+      <iframe name="" src="${this.iframeUrl}"
+      @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
+      ></iframe>
+      `
+    }
+    return html`<div>Sorry, only Twitter URLs can be loaded</div>`
   }
 
   onDownload(e) {
