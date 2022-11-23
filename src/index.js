@@ -298,15 +298,22 @@ export default class LiveWebRecorder extends LitElement
     }
 
     return html`
-    <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived.</div>
+    <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Total Size: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
+      </div>
       <div class="mt-3 leading-tight break-all text-center">
         <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
           Download Archived Tweet
         </a>
       </div>
-      <div class="mt-6">
-        <sl-button type="primary" size="large" @click=${this.onUpload}>Pin Tweet to IPFS</sl-button>
+      <div class="mt-6 w-max">
+        <sl-button class="block w-full" type="primary" size="large" @click=${this.onUpload}>Pin Tweet to IPFS</sl-button>
+        <sl-button class="block w-full mt-3" size="large" @click=${this.reset}>
+          Archive Another Tweet
+        </sl-button>
       </div>
+      
     `
   //   return html`
   //   <div>
