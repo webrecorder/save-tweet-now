@@ -1,42 +1,52 @@
-live-web-proxy {
-  --sl-color-primary-600: var(--sl-color-primary-500);
-  --sl-color-success-600: var(--sl-color-success-500);
-  background-color: white;
+:root {
+  --sl-color-primary-600: #0366d6;
+  --background-color: #fafbfc;
+  --indicator-color: #2188ff;
 }
 
-sl-textarea::part(textarea) {
-  background: var(--sl-color-neutral-200);
+* {
+  box-sizing: border-box;
 }
 
-.app {
-  margin: var(--sl-spacing-small);
-  max-width: 100%;
-  width: 1000px;
+body {
+  background-color: var(--background-color);
 }
 
-.app-content {
+.panel {
+  border: 1px solid var(--sl-panel-border-color);
+  border-radius: 0.5rem;
+  width: 100%;
+  background-color: var(--sl-panel-background-color);
+}
+
+sl-spinner {
+  --track-width: 3px;
+}
+
+sl-progress-bar {
+  --height: 9px;
+}
+
+.tweetWrapper {
   position: relative;
-  display: grid;
-  grid-gap: 1.0rem;
-  grid-template-columns: repeat(var(--app-content-columns, 1), 1fr);
-  grid-template-rows: max-content;
-  height: calc(100vh - var(--title-font-size) - var(--sl-spacing-small) * 3);
 }
 
-@media only screen and (min-width: 1000px) {
-  .app-content {
-    padding: 1.0rem;
-    grid-template-rows: auto;
-    height: 100%;
-  }
-
-  .app-content-2-col {
-    --app-content-columns: 2;
-  }
-
-  .app-content-2-col .app-content-header {
-    /* Reverse order of header and body */
-    order: 1;
-  }
+.tweetWrapper:before,
+.tweetWrapper:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  pointer-events: none;
 }
 
+.tweetWrapper:before {
+  top: 0;
+  background-image: linear-gradient(var(--background-color), transparent);
+}
+
+.tweetWrapper:after {
+  bottom: 0;
+  background-image: linear-gradient(transparent, var(--background-color));
+}

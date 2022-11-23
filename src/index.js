@@ -6,7 +6,8 @@ import { Web3Uploader } from "./web3";
 
 const VERSION = __AWP_EXPRESS_VERSION__;
 
-const DEFAULT_URL = "https://twitter.com/IlyaKreymer/status/1590912407823843329";
+// const DEFAULT_URL = "https://twitter.com/IlyaKreymer/status/1590912407823843329";
+const DEFAULT_URL = ""
 
 
 // ===========================================================================
@@ -40,9 +41,11 @@ export default class LiveWebRecorder extends LitElement
     return {
       url: { type: String },
 
+      isInvalidUrl: { type: Boolean },
       loading: { type: Boolean },
       uploading: { type: Boolean },
       autoupload: { type: Boolean },
+      isDone: { type: Boolean },
       
       opts: { type: Object },
       inited: { type: Boolean },
@@ -111,9 +114,12 @@ export default class LiveWebRecorder extends LitElement
 
   handleHashChange(q) {
     this.url = this.validateUrl(q.get("url") || DEFAULT_URL);
+    this.isInvalidUrl = !this.url
     this.autoupload = (q.get("autoupload") === "1");
 
-    this.initCollection();
+    if (this.url) {
+      this.initCollection();
+    }
   }
 
   async updateSize() {
@@ -133,7 +139,6 @@ export default class LiveWebRecorder extends LitElement
 
     this.waitForDoneId = setTimeout(() => {
       if (this.size > 1000000) {
-        this.isDone = true;
         this.markAsDone();
       }
     }, 2000);
@@ -141,6 +146,7 @@ export default class LiveWebRecorder extends LitElement
 
   markAsDone() {
     console.log("done?");
+    this.isDone = true;
     if (this.autoupload) {
       this.onUpload();
     }
@@ -159,6 +165,7 @@ export default class LiveWebRecorder extends LitElement
   }
 
   initCollection() {
+    console.log('init')
     const baseUrl = new URL(window.location);
     baseUrl.hash = "";
 
@@ -224,62 +231,113 @@ export default class LiveWebRecorder extends LitElement
 
   render() {
     return html`
-    ${this.renderContent()}
-    ${this.renderControls()}
+    <div class="flex flex-col h-screen overflow-hidden pb-8 md:pb-0">
+      <header class="flex-0 mt-12 mb-8 x-2">
+        <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
+      </header>
+      <div class="flex-0 px-2 mb-8">
+        <div class="panel p-8 shadow-sm flex flex-col items-center">
+          ${this.renderControls()}
+        </div>
+      </div>
+      <div class="flex-1 overflow-hidden tweetWrapper">
+        ${this.renderContent()}
+      </div>
+    </div>
     `;
+  }
+  
+  renderURLInput() {
+    return html`
+      <sl-form @sl-submit="${this.onUpdateUrl}" class="block w-full text-center">
+        <sl-input class="w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}" required>
+        </sl-input>
+        <div class="mt-6">
+          <sl-button type="primary" size="large" submit>Archive Tweet!</sl-button>
+        </div>
+      </sl-form>
+    `
   }
 
   renderControls() {
-    return html`
-    <div>
-    <sl-radio-group class="flex" fieldset label="Archive Info">
-      <div class="mb-2">Size Loaded: <b><sl-format-bytes value="${this.size || 0}"></sl-format-bytes></b></div>
-      <sl-button type="primary" href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank">
-      <sl-icon class="text-lg mr-1" name="file-earmark-arrow-down"></sl-icon>Download Archive</sl-button>
-    </sl-radio-group>
-    <sl-radio-group class="flex" fieldset style="max-width: 500px" label="Share">
-      <div class="mb-2">${this.cidLink ? html`
-          Sharable Link:&nbsp;
-          <a class="text-blue-800 font-bold break-all" target="_blank" href="${this.cidLink}">${this.cidLink}</a>
-          <sl-button size="small" @click="${() => this.cidLink = null}">Reset</sl-button>` : html`
-          ${this.uploading ? html`
-          <sl-button disabled type="success">
-          <sl-spinner style="--indicator-color: currentColor"></sl-spinner>
-          Uploading...</sl-button>
-          ${this.uploadProgress > 0 ? html`
-          <sl-progress-bar class="mt-2" value="${this.uploadProgress}" style="--height: 6px;"></sl-progress-bar>` : ``}
-          ` : html`
-
-          <sl-button type="success" @click="${this.onUpload}">
-          <sl-icon class="text-lg mr-1" name="share-fill"></sl-icon>
-          Share to IPFS</sl-button>
-          <div class="text-xs">(via <a target="_blank" href="https://web3.storage">web3.storage</a>)</div>
-          `}
-        `}
+    if (!this.url) {
+      return this.renderURLInput()
+    }
+    if (this.cidLink) {
+      return html`
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Tweet Pinned!</div>
+      <div class="mt-3 leading-tight break-all text-center">
+        <a href=${this.cidLink} target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
+          ${this.cidLink}
+        </a>
       </div>
-    </sl-radio-group>
-  </div>`;
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Note: It may take a few minutes for the tweet to become available on the IPFS network.
+      </div>
+      <div class="mt-6">
+        <sl-button size="large" @click=${this.reset}>
+          Save Another Tweet
+        </sl-button>
+      </div>
+      `
+    }
+    if (this.uploading) {
+      return html`
+      <div>
+        <sl-spinner class="text-[7rem]"></sl-spinner>
+      </div>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Pinning Tweet</div>
+      <div class="mt-3 text-sm leading-none text-neutral-700">Pinning to IPFS</div>
+      `
+    }
+
+    if (!this.isDone) {
+      return html`
+      <div>
+        <sl-spinner class="text-[7rem]"></sl-spinner>
+      </div>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Size Loaded: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
+      </div>
+       `
+    }
+
+    return html`
+    <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Total Size: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
+      </div>
+      <div class="mt-3 leading-tight break-all text-center">
+        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
+          Download Archived Tweet
+        </a>
+      </div>
+      <div class="mt-6 w-max">
+        <sl-button class="block w-full" type="primary" size="large" @click=${this.onUpload}>Pin Tweet to IPFS</sl-button>
+        <sl-button class="block w-full mt-3" size="large" @click=${this.reset}>
+          Archive Another Tweet
+        </sl-button>
+      </div>
+      
+    `
   }
 
   renderContent() {
-    return html`
-    <div>
-    <sl-form @sl-submit="${this.onUpdateUrl}" class="grid grid-cols-1 gap-3 mb-4 mt-2">
-      <div class="flex">
-        <sl-input class="rounded w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}">
-        </sl-input>
-      </div>
-    </sl-form>
+    if (!this.url) return
 
-    ${this.collReady && this.iframeUrl ? html`
-    <iframe name="" src="${this.iframeUrl}"
-    @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
-    ></iframe>
-
-    ` : html`
-    <div>Sorry, only Twitter URLs can be loaded</div>
-    `}
-  </div>`
+    if (this.isInvalidUrl) {
+      return html`<div class="my-8 text-gray-500">Sorry, only Twitter URLs can be loaded</div>`
+    }
+    if (this.collReady && this.iframeUrl) {
+      return html`
+      <iframe name="" src="${this.iframeUrl}"
+      @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
+      ></iframe>
+      `
+    }
+    
+    return ""
   }
 
   onDownload(e) {
@@ -304,6 +362,7 @@ export default class LiveWebRecorder extends LitElement
     const changed = url && url !== this.actualUrl;
 
     this.url = this.validateUrl(url);
+    this.isInvalidUrl = !this.url
 
     if (changed) {
       this.initCollection();
@@ -349,6 +408,7 @@ export default class LiveWebRecorder extends LitElement
 
           if (url.startsWith(this.oembedPrefix)) {
             this.url = this.validateUrl(url.slice(this.oembedPrefix.length));
+            this.isInvalidUrl = !this.url
           }
 
           if (title && title !== url) {
@@ -401,6 +461,12 @@ export default class LiveWebRecorder extends LitElement
     urlobj.protocol = "https";
     urlobj.search = "";
     return urlobj.href;
+  }
+
+  reset() {
+    window.location.hash = ''
+    this.cidLink = undefined
+    this.collReady = undefined
   }
 }
 
