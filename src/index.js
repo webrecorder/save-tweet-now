@@ -239,8 +239,9 @@ export default class LiveWebRecorder extends LitElement
     <div class="mb-12">
       ${this.renderContent()}
     </div>
-    <!-- <footer class="mb-10">
-    </footer> -->
+    <footer class="mb-10">
+      ${this.renderFooter()}
+    </footer>
     `;
   }
 
@@ -324,6 +325,15 @@ export default class LiveWebRecorder extends LitElement
       `
     }
     return html`<div>Sorry, only Twitter URLs can be loaded</div>`
+  }
+
+  renderFooter() {
+    return html`
+    <div class="flex justify-between text-xs">
+      <div>Created by WebRecorder & David Justice</div>
+      <!-- <div>Source Code</div> -->
+    </div>
+    `
   }
 
   onDownload(e) {
