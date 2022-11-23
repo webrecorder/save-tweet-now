@@ -1,4 +1,3 @@
-// import "./extend.css";
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/components/form/form.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
