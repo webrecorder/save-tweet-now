@@ -224,8 +224,18 @@ export default class LiveWebRecorder extends LitElement
 
   render() {
     return html`
-    ${this.renderContent()}
-    ${this.renderControls()}
+    <header class="mb-8">
+      <h1 class="my-0 leading-none font-semibold text-[2rem]">Save Tweet Now</h1>
+    </header>
+    <div class="panel card mb-12 shadow-sm">
+      <!-- ${this.renderControls()} -->
+    </div>
+    <div class="panel card mb-12">
+      ${this.renderContent()}
+    </div>
+    <footer class="mb-10">
+      footer
+    </footer>
     `;
   }
 
@@ -262,6 +272,7 @@ export default class LiveWebRecorder extends LitElement
   }
 
   renderContent() {
+    console.log(this.collReady, this.iframeUrl)
     return html`
     <div>
     <sl-form @sl-submit="${this.onUpdateUrl}" class="grid grid-cols-1 gap-3 mb-4 mt-2">
