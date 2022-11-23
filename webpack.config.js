@@ -8,9 +8,9 @@ const PACKAGE = require("./package.json");
 const AWP_PACKAGE = require("./node_modules/@webrecorder/archivewebpage/package.json");
 const WARCIO_PACKAGE = require("./node_modules/warcio/package.json");
 
-const DEFAULT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDREMEMxYjlCNzdDOTYxMTA4NkU2NDMzOTI0NDM3Rjc1MGRBNjVlNTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NDYyOTExMjU3MzAsIm5hbWUiOiJhd3BleHByZXNzIn0.oxSNKwda3IhOxfyjaq8Jva7RblPilsPMa9vV8bkzWVI";
+const WEB3_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDREMEMxYjlCNzdDOTYxMTA4NkU2NDMzOTI0NDM3Rjc1MGRBNjVlNTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NDYyOTExMjU3MzAsIm5hbWUiOiJhd3BleHByZXNzIn0.oxSNKwda3IhOxfyjaq8Jva7RblPilsPMa9vV8bkzWVI";
 
-const TOKEN = process.env.TOKEN || DEFAULT_TOKEN;
+const TOKEN = process.env.TOKEN || WEB3_STORAGE_TOKEN;
 
 const RWP_PREFIX = "https://cdn.jsdelivr.net/npm/replaywebpage@1.7.2/";
 
@@ -50,6 +50,7 @@ module.exports = {
       __AWP_VERSION__: JSON.stringify(AWP_PACKAGE.version),
       __WARCIO_VERSION__: JSON.stringify(WARCIO_PACKAGE.version),
       __RWP_PREFIX__ : JSON.stringify(RWP_PREFIX),
+      __WEB3_STORAGE_TOKEN__: JSON.stringify(WEB3_STORAGE_TOKEN),
     }),
     new webpack.ProvidePlugin({
       process: "process/browser.js",
