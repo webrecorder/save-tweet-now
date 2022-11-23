@@ -1,5 +1,6 @@
 :root {
   --sl-color-primary-600: #0366d6;
+  --background-color: #fafbfc;
 }
 
 * {
@@ -7,8 +8,7 @@
 }
 
 body {
-  margin: 0;
-  background-color: #fafbfc; /* TODO find matching color token */
+  background-color: var(--background-color);
 }
 
 .panel {
@@ -23,7 +23,26 @@ sl-spinner {
   --indicator-color: #2188ff;
 }
 
-.tweet {
-  min-height: 600px;
-  overflow: auto;
+.tweetWrapper {
+  position: relative;
+}
+
+.tweetWrapper:before,
+.tweetWrapper:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  pointer-events: none;
+}
+
+.tweetWrapper:before {
+  top: 0;
+  background-image: linear-gradient(var(--background-color), transparent);
+}
+
+.tweetWrapper:after {
+  bottom: 0;
+  background-image: linear-gradient(transparent, var(--background-color));
 }

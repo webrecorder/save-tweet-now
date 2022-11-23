@@ -224,24 +224,25 @@ export default class LiveWebRecorder extends LitElement
 
   render() {
     return html`
-    <header class="mb-8">
-      <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
-    </header>
-    ${!this.cidLink && !this.uploading ? html`
-      <div class="text-center mb-8">
-        ${this.renderURLInput()}
+    <div class="flex flex-col h-screen overflow-hidden pb-8 md:pb-0">
+      <header class="flex-0 mt-12 mb-8 x-2">
+        <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
+      </header>
+      <div class="flex-0 mb-8 px-2">
+      ${!this.cidLink && !this.uploading ? html`
+        <div class="text-center">
+          ${this.renderURLInput()}
+        </div>
+      ` : html`
+        <div class="panel flex flex-col items-center p-8 shadow-sm">
+          ${this.renderDownloadControls()}
+        </div>
+      `}
       </div>
-    ` : html`
-      <div class="panel flex flex-col items-center p-8 mb-8 shadow-sm">
-        ${this.renderDownloadControls()}
+      <div class="flex-1 overflow-hidden tweetWrapper">
+        ${this.renderContent()}
       </div>
-    `}
-    <div class="mb-12">
-      ${this.renderContent()}
     </div>
-    <footer class="mb-10">
-      ${this.renderFooter()}
-    </footer>
     `;
   }
 
@@ -321,21 +322,12 @@ export default class LiveWebRecorder extends LitElement
   renderContent() {
     if (this.collReady && this.iframeUrl) {
       return html`
-      <iframe name="" src="${this.iframeUrl}" class="tweet"
+      <iframe name="" src="${this.iframeUrl}"
       @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
       ></iframe>
       `
     }
-    return html`<div>Sorry, only Twitter URLs can be loaded</div>`
-  }
-
-  renderFooter() {
-    return html`
-    <div class="flex justify-between text-xs">
-      <div>Created by WebRecorder & David Justice</div>
-      <!-- <div>Source Code</div> -->
-    </div>
-    `
+    return html`<div class="my-8 text-gray-500">Sorry, only Twitter URLs can be loaded</div>`
   }
 
   onDownload(e) {
