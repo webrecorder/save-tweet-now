@@ -263,7 +263,9 @@ export default class LiveWebRecorder extends LitElement
     }
     if (this.uploading) {
       return html`
-      <sl-spinner class="text-[7rem]"></sl-spinner>
+      <div>
+        <sl-spinner class="text-[7rem]"></sl-spinner>
+      </div>
       <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
       <div class="mt-3 text-sm leading-none text-neutral-700">Saving Archive</div>
       `
