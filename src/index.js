@@ -247,7 +247,7 @@ export default class LiveWebRecorder extends LitElement
   renderURLInput() {
     return html`
       <sl-form @sl-submit="${this.onUpdateUrl}" class="block w-full text-center">
-        <sl-input class="w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}">
+        <sl-input class="w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}" required>
         </sl-input>
         <div class="mt-6">
           <sl-button type="primary" size="large" submit>Archive Tweet!</sl-button>
@@ -257,7 +257,6 @@ export default class LiveWebRecorder extends LitElement
   }
 
   renderControls() {
-    console.log(this.url, this.cidLink, this.uploading)
     if (!this.url) {
       return this.renderURLInput()
     }
@@ -270,8 +269,8 @@ export default class LiveWebRecorder extends LitElement
         </a>
       </div>
       <div class="mt-6">
-        <sl-button type="primary" size="large" href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}">
-          Download Archived Tweet
+        <sl-button size="large" @click=${this.reset}>
+          Save Another Tweet
         </sl-button>
       </div>
       `
@@ -287,7 +286,15 @@ export default class LiveWebRecorder extends LitElement
     }
 
     return html`
-    <sl-button type="primary" size="large" @click=${this.onUpload}>Pin Tweet to IPFS</sl-button>
+    <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived.</div>
+      <div class="mt-3 leading-tight break-all text-center">
+        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" class="text-blue-500 hover:text-blue-600 transition-colors">
+          Download Archived Tweet
+        </a>
+      </div>
+      <div class="mt-6">
+        <sl-button type="primary" size="large" @click=${this.onUpload}>Pin Tweet to IPFS</sl-button>
+      </div>
     `
   //   return html`
   //   <div>
@@ -458,6 +465,12 @@ export default class LiveWebRecorder extends LitElement
     urlobj.protocol = "https";
     urlobj.search = "";
     return urlobj.href;
+  }
+
+  reset() {
+    window.location.hash = ''
+    this.cidLink = undefined
+    this.collReady = undefined
   }
 }
 
