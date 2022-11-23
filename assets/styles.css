@@ -1,3 +1,7 @@
+:root {
+  --sl-color-primary-600: #0366d6;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,15 +11,6 @@ body {
   background-color: #fafbfc; /* TODO find matching color token */
 }
 
-live-web-proxy {
-  --sl-color-primary-600: var(--sl-color-primary-500);
-  --sl-color-success-600: var(--sl-color-success-500);
-}
-
-/* sl-textarea::part(textarea) {
-  background: var(--sl-color-neutral-200);
-} */
-
 .panel {
   border: 1px solid var(--sl-panel-border-color);
   border-radius: 0.5rem;
@@ -23,9 +18,7 @@ live-web-proxy {
   background-color: var(--sl-panel-background-color);
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  padding: var(--card-padding, 1rem);
-  overflow: hidden;
+sl-spinner {
+  --track-width: 3px;
+  --indicator-color: #2188FF;
 }

@@ -227,10 +227,25 @@ export default class LiveWebRecorder extends LitElement
     <header class="mb-8">
       <h1 class="my-0 leading-none font-semibold text-[2rem]">Save Tweet Now</h1>
     </header>
-    <div class="panel card mb-12 shadow-sm">
+    <div class="panel flex flex-col items-center p-8 mb-12 shadow-sm">
+      <div>
+        <sl-button type="primary" size="large">Archive Tweet!</sl-button>
+      </div>
+      <sl-spinner class="text-[7rem]"></sl-spinner>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
+      <div class="mt-3 text-sm leading-none text-neutral-700">Saving Archive</div>
+      <div class="mt-6 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
+      <div class="mt-3 leading-none">
+        <a href="" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
+          link
+        </a>
+      </div>
+      <div class="mt-6">
+        <sl-button type="primary" size="large">Download Archived Tweet</sl-button>
+      </div>
       <!-- ${this.renderControls()} -->
     </div>
-    <div class="panel card mb-12">
+    <div class="panel mb-12">
       ${this.renderContent()}
     </div>
     <footer class="mb-10">
