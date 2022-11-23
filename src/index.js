@@ -138,7 +138,6 @@ export default class LiveWebRecorder extends LitElement
 
     this.waitForDoneId = setTimeout(() => {
       if (this.size > 1000000) {
-        this.isDone = true;
         this.markAsDone();
       }
     }, 2000);
@@ -146,6 +145,7 @@ export default class LiveWebRecorder extends LitElement
 
   markAsDone() {
     console.log("done?");
+    this.isDone = true;
     if (this.autoupload) {
       this.onUpload();
     }
