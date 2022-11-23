@@ -271,6 +271,9 @@ export default class LiveWebRecorder extends LitElement
           ${this.cidLink}
         </a>
       </div>
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Note: It may take a few minutes for the tweet to become available on the IPFS network.
+      </div>
       <div class="mt-6">
         <sl-button size="large" @click=${this.reset}>
           Save Another Tweet
@@ -294,7 +297,10 @@ export default class LiveWebRecorder extends LitElement
         <sl-spinner class="text-[7rem]"></sl-spinner>
       </div>
       <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
-      `
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Size Loaded: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
+      </div>
+       `
     }
 
     return html`
@@ -315,35 +321,6 @@ export default class LiveWebRecorder extends LitElement
       </div>
       
     `
-  //   return html`
-  //   <div>
-  //   <sl-radio-group class="flex" fieldset label="Archive Info">
-  //     <div class="mb-2">Size Loaded: <b><sl-format-bytes value="${this.size || 0}"></sl-format-bytes></b></div>
-  //     <sl-button type="primary" href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank">
-  //     <sl-icon class="text-lg mr-1" name="file-earmark-arrow-down"></sl-icon>Download Archive</sl-button>
-  //   </sl-radio-group>
-  //   <sl-radio-group class="flex" fieldset style="max-width: 500px" label="Share">
-  //     <div class="mb-2">${this.cidLink ? html`
-  //         Sharable Link:&nbsp;
-  //         <a class="text-blue-800 font-bold break-all" target="_blank" href="${this.cidLink}">${this.cidLink}</a>
-  //         <sl-button size="small" @click="${() => this.cidLink = null}">Reset</sl-button>` : html`
-  //         ${this.uploading ? html`
-  //         <sl-button disabled type="success">
-  //         <sl-spinner style="--indicator-color: currentColor"></sl-spinner>
-  //         Uploading...</sl-button>
-  //         ${this.uploadProgress > 0 ? html`
-  //         <sl-progress-bar class="mt-2" value="${this.uploadProgress}" style="--height: 6px;"></sl-progress-bar>` : ``}
-  //         ` : html`
-
-  //         <sl-button type="success" @click="${this.onUpload}">
-  //         <sl-icon class="text-lg mr-1" name="share-fill"></sl-icon>
-  //         Share to IPFS</sl-button>
-  //         <div class="text-xs">(via <a target="_blank" href="https://web3.storage">web3.storage</a>)</div>
-  //         `}
-  //       `}
-  //     </div>
-  //   </sl-radio-group>
-  // </div>`;
   }
 
   renderContent() {
