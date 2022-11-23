@@ -234,8 +234,10 @@ export default class LiveWebRecorder extends LitElement
       <header class="flex-0 mt-12 mb-8 x-2">
         <h1 class="my-0 leading-none font-semibold text-[2rem] text-center">Save Tweet Now</h1>
       </header>
-      <div class="flex-0 mb-8 panel p-8 shadow-sm flex flex-col items-center">
-        ${this.renderControls()}
+      <div class="flex-0 px-2 mb-8">
+        <div class="panel p-8 shadow-sm flex flex-col items-center">
+          ${this.renderControls()}
+        </div>
       </div>
       <div class="flex-1 overflow-hidden tweetWrapper">
         ${this.renderContent()}
