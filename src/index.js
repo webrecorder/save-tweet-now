@@ -2,12 +2,15 @@ import "tailwindcss/tailwind.css";
 import "./shoelace";
 
 import { LitElement, html } from "lit";
-import { Web3Uploader } from "./web3";
+//import { Web3Uploader } from "./web3";
 
-const VERSION = __AWP_EXPRESS_VERSION__;
+//const VERSION = __AWP_EXPRESS_VERSION__;
 
-// const DEFAULT_URL = "https://twitter.com/IlyaKreymer/status/1590912407823843329";
-const DEFAULT_URL = ""
+const DEFAULT_URL = "";
+
+// eslint-disable-next-line no-undef
+const RWP_PREFIX = __RWP_PREFIX__;
+
 
 
 // ===========================================================================
@@ -15,7 +18,6 @@ export default class LiveWebRecorder extends LitElement
 {
   constructor() {
     super();
-    this.archivePrefix = "https://web.archive.org/web/";
     this.proxyPrefix = "https://wabac-cors-proxy.webrecorder.workers.dev/proxy/";
 
     this.oembedPrefix = "https://oembed.link/";
@@ -68,7 +70,7 @@ export default class LiveWebRecorder extends LitElement
   }
 
   firstUpdated() {
-    document.addEventListener('fullscreenchange', () => {
+    document.addEventListener("fullscreenchange", () => {
       this.fullscreen = !!document.fullscreenElement;
     });
 
@@ -114,7 +116,7 @@ export default class LiveWebRecorder extends LitElement
 
   handleHashChange(q) {
     this.url = this.validateUrl(q.get("url") || DEFAULT_URL);
-    this.isInvalidUrl = !this.url
+    this.isInvalidUrl = !this.url;
     this.autoupload = (q.get("autoupload") === "1");
 
     if (this.url) {
@@ -165,7 +167,7 @@ export default class LiveWebRecorder extends LitElement
   }
 
   initCollection() {
-    console.log('init')
+    console.log("init");
     const baseUrl = new URL(window.location);
     baseUrl.hash = "";
 
@@ -189,7 +191,8 @@ export default class LiveWebRecorder extends LitElement
         "baseUrl": baseUrl.href,
         "baseUrlHashReplay": true,
         "recording": true,
-        "noPostToGet": true
+        "noPostToGet": true,
+        "firstPageOnly": true
       },
     };
 
@@ -256,12 +259,12 @@ export default class LiveWebRecorder extends LitElement
           <sl-button type="primary" size="large" submit>Archive Tweet!</sl-button>
         </div>
       </sl-form>
-    `
+    `;
   }
 
   renderControls() {
     if (!this.url) {
-      return this.renderURLInput()
+      return this.renderURLInput();
     }
     if (this.cidLink) {
       return html`
@@ -279,7 +282,7 @@ export default class LiveWebRecorder extends LitElement
           Save Another Tweet
         </sl-button>
       </div>
-      `
+      `;
     }
     if (this.uploading) {
       return html`
@@ -288,7 +291,7 @@ export default class LiveWebRecorder extends LitElement
       </div>
       <div class="mt-6 font-semibold text-[1.25rem] leading-none">Pinning Tweet</div>
       <div class="mt-3 text-sm leading-none text-neutral-700">Pinning to IPFS</div>
-      `
+      `;
     }
 
     if (!this.isDone) {
@@ -300,7 +303,7 @@ export default class LiveWebRecorder extends LitElement
       <div class="mt-3 leading-tight text-center text-gray-400">
         Size Loaded: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
       </div>
-       `
+       `;
     }
 
     return html`
@@ -320,24 +323,24 @@ export default class LiveWebRecorder extends LitElement
         </sl-button>
       </div>
       
-    `
+    `;
   }
 
   renderContent() {
-    if (!this.url) return
+    if (!this.url) return;
 
     if (this.isInvalidUrl) {
-      return html`<div class="my-8 text-gray-500">Sorry, only Twitter URLs can be loaded</div>`
+      return html`<div class="my-8 text-gray-500">Sorry, only Twitter URLs can be loaded</div>`;
     }
     if (this.collReady && this.iframeUrl) {
       return html`
       <iframe name="" src="${this.iframeUrl}"
       @load="${this.onFrameLoad}" allow="autoplay 'self'; fullscreen" allowfullscreen
       ></iframe>
-      `
+      `;
     }
     
-    return ""
+    return "";
   }
 
   onDownload(e) {
@@ -362,7 +365,7 @@ export default class LiveWebRecorder extends LitElement
     const changed = url && url !== this.actualUrl;
 
     this.url = this.validateUrl(url);
-    this.isInvalidUrl = !this.url
+    this.isInvalidUrl = !this.url;
 
     if (changed) {
       this.initCollection();
@@ -408,7 +411,7 @@ export default class LiveWebRecorder extends LitElement
 
           if (url.startsWith(this.oembedPrefix)) {
             this.url = this.validateUrl(url.slice(this.oembedPrefix.length));
-            this.isInvalidUrl = !this.url
+            this.isInvalidUrl = !this.url;
           }
 
           if (title && title !== url) {
@@ -427,19 +430,79 @@ export default class LiveWebRecorder extends LitElement
 
   async onUpload() {
     this.uploading = true;
-    const storage = new Web3Uploader();
-    const url = this.url;
-    const ts = this.lastTs;
-   //const title = this.lastTitle;
+    //const storage = new Web3Uploader();
+    //const url = this.url;
+    //const ts = this.lastTs;
+    //const title = this.lastTitle;
     this.uploadProgress = 0;
-    const cid = await storage.uploadWACZ(this.oembedPrefix + url, ts, `w/api/c/${this.collId}/dl?pages=all&format=wacz`, (size) => {
+
+    //const cid = await storage.uploadWACZ(this.oembedPrefix + url, ts, `w/api/c/${this.collId}/dl?pages=all&format=wacz`, (size) => {
+    //  this.uploadProgress = this.size ? Math.round(100.0 * size / this.size) : 0;
+    //});
+
+    const result = await this.ipfsAdd((size) => {
       this.uploadProgress = this.size ? Math.round(100.0 * size / this.size) : 0;
     });
+
+    const { cid } = result;
+
+    console.log(result);
+
     this.cidLink = `https://w3s.link/ipfs/${cid}/`;
     window.dispatchEvent(new CustomEvent("archive-done", {detail: {cid}}));
 
     this.uploading = false;
   }
+
+  ipfsAdd(progressCallback) {
+    let pc;
+
+    const p = new Promise((resolve, reject) => pc = {resolve, reject});
+
+    const listener = (event) => {
+      const { data } = event;
+
+      if (!data || data.collId !== this.collId) {
+        return;
+      }
+
+      switch (data.type) {
+      case "ipfsProgress":
+        if (progressCallback) {
+          progressCallback(data.size);
+        }
+        break;
+
+      case "ipfsAdd":
+        if (data.result) {
+          pc.resolve(data.result);
+        } else {
+          pc.reject();
+        }
+        navigator.serviceWorker.removeEventListener("message", listener);
+        break;
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", listener);
+
+    const replayOpts = {
+      showEmbed: true,
+      replayBaseUrl: RWP_PREFIX,
+      pageTitle: "Archived Tweet",
+      pageUrl: "page:0",
+      customSplits: true
+    }
+
+
+    fetch(`w/api/c/${this.collId}/ipfs`, {
+      method: "POST",
+      body: JSON.stringify(replayOpts)
+    });
+
+    return p;
+  }
+
 
   async deleteColl(collId) {
     if (collId) {
@@ -464,9 +527,9 @@ export default class LiveWebRecorder extends LitElement
   }
 
   reset() {
-    window.location.hash = ''
-    this.cidLink = undefined
-    this.collReady = undefined
+    window.location.hash = "";
+    this.cidLink = undefined;
+    this.collReady = undefined;
   }
 }
 
