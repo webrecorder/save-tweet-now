@@ -99,7 +99,7 @@ export default class LiveWebRecorder extends LitElement
       this.deleteColl(this.collId);
     });
 
-    setInterval(() => this.updateSize(), 5000);
+    this.sizeUpdateId = setInterval(() => this.updateSize(), 5000);
   }
 
   async getPublicKey() {
@@ -147,10 +147,12 @@ export default class LiveWebRecorder extends LitElement
   }
 
   markAsDone() {
-    console.log("done?");
     this.isDone = true;
     if (this.autoupload) {
       this.onUpload();
+    }
+    if (this.sizeUpdateId) {
+      clearInterval(this.sizeUpdateId);
     }
   }
 
@@ -189,7 +191,7 @@ export default class LiveWebRecorder extends LitElement
         "isLive": false,
         "archivePrefix": this.archivePrefix,
         "baseUrl": baseUrl.href,
-        "baseUrlHashReplay": true,
+        //"baseUrlHashReplay": true,
         "recording": true,
         "noPostToGet": true,
         "firstPageOnly": true
@@ -255,7 +257,8 @@ export default class LiveWebRecorder extends LitElement
       <sl-form @sl-submit="${this.onUpdateUrl}" class="block w-full text-center">
         <sl-input class="w-full" id="url" placeholder="Enter Twitter URL (https://twitter.com/...) to load Tweet" .value="${this.url}" required>
         </sl-input>
-        <div class="mt-6">
+        <sl-switch class="float-right" style="--thumb-size: 16px" ?checked=${this.autoupload} @sl-change="${() => this.autoupload = !this.autoupload}">Auto-upload to IPFS</sl-switch>
+        <div class="mt-10">
           <sl-button type="primary" size="large" submit>Archive Tweet!</sl-button>
         </div>
       </sl-form>
