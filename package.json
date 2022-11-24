@@ -5,9 +5,9 @@
   "license": "MIT",
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.62",
+    "@webrecorder/awp-sw": "github:webrecorder/awp-sw.git",
     "@webrecorder/wabac": "^2.13.8",
-    "awp-core": "github:ikreymer/awp-core.git",
-    "web3.storage": "^3.5.6"
+    "awp-core": "github:ikreymer/awp-core.git"
   },
   "scripts": {
     "build": "webpack --mode production",
