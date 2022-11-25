@@ -494,6 +494,8 @@ export default class LiveWebRecorder extends LitElement
       replayBaseUrl: RWP_PREFIX,
       pageTitle: "Archived Tweet",
       pageUrl: "page:0",
+      loading: "eager",
+      gzip: false,
       customSplits: true
     }
 

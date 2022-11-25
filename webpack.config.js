@@ -12,7 +12,8 @@ const WEB3_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ
 
 const TOKEN = process.env.TOKEN || WEB3_STORAGE_TOKEN;
 
-const RWP_PREFIX = "https://cdn.jsdelivr.net/npm/replaywebpage/";
+//const RWP_PREFIX = "https://cdn.jsdelivr.net/npm/replaywebpage/";
+const RWP_PREFIX = "https://replayweb.page/";
 
 module.exports = {
   target: "web",

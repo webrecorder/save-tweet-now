@@ -5,8 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.62",
-    "@webrecorder/awp-sw": "github:webrecorder/awp-sw.git",
-    "@webrecorder/wabac": "^2.13.8",
+    "@webrecorder/awp-sw": "^0.1.5",
+    "@webrecorder/wabac": "^2.13.10",
     "awp-core": "github:ikreymer/awp-core.git"
   },
   "scripts": {
