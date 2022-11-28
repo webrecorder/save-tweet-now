@@ -24,7 +24,7 @@ export default class LiveWebRecorder extends LitElement
 
     this.lastUrl = null;
     this.lastTs = null;
-    this.lastTitle = null;
+    //this.lastTitle = null;
 
     this.size = 0;
     this.uploadProgress = 0;
@@ -52,6 +52,8 @@ export default class LiveWebRecorder extends LitElement
       opts: { type: Object },
       inited: { type: Boolean },
       iframeUrl: { type: String },
+
+      title: { type: String },
 
       collReady: { type: Boolean },
 
@@ -277,6 +279,7 @@ export default class LiveWebRecorder extends LitElement
           ${this.cidLink}
         </a>
       </div>
+      ${this.renderSize()}
       <div class="mt-3 leading-tight text-center text-gray-400">
         Note: It may take a few minutes for the tweet to become available on the IPFS network.
       </div>
@@ -303,17 +306,13 @@ export default class LiveWebRecorder extends LitElement
         <sl-spinner class="text-[7rem]"></sl-spinner>
       </div>
       <div class="mt-6 font-semibold text-[1.25rem] leading-none">Archiving Tweet</div>
-      <div class="mt-3 leading-tight text-center text-gray-400">
-        Size Loaded: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
-      </div>
+      ${this.renderSize()}
        `;
     }
 
     return html`
     <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
-      <div class="mt-3 leading-tight text-center text-gray-400">
-        Total Size: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
-      </div>
+      ${this.renderSize()}
       <div class="mt-3 leading-tight break-all text-center">
         <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
           Download Archived Tweet
@@ -327,6 +326,13 @@ export default class LiveWebRecorder extends LitElement
       </div>
       
     `;
+  }
+
+  renderSize() {
+    return html`
+      <div class="mt-3 leading-tight text-center text-gray-400">
+        Total Size: <sl-format-bytes value="${this.size || 0}"></sl-format-bytes>
+      </div>`;
   }
 
   renderContent() {
@@ -346,7 +352,7 @@ export default class LiveWebRecorder extends LitElement
     return "";
   }
 
-  onDownload(e) {
+  onDownload() {
     setTimeout(() => this.getPublicKey(), 1000);
     return true;
   }
@@ -401,34 +407,38 @@ export default class LiveWebRecorder extends LitElement
       if (event.data.wb_type === "load") {
         const ts = event.data.ts;
         const url = event.data.url;
-        const title = event.data.title;
-        //this.clearLoading(iframe.contentWindow);
+
+        this.updateSize();
 
         if (this.lastUrl !== url) {
-          const req = {url, ts, title};
-          //console.log(title, ts, url);
-
           this.lastTs = ts;
           this.lastUrl = url;
-          this.lastTitle = title;
+          //this.lastTitle = title;
 
           if (url.startsWith(this.oembedPrefix)) {
             this.url = this.validateUrl(url.slice(this.oembedPrefix.length));
             this.isInvalidUrl = !this.url;
           }
-
-          if (title && title !== url) {
-            try {
-              await fetch(`w/api/c/${this.collId}/pageTitle`, {method: "POST", body: JSON.stringify(req)});
-            } catch (e) {
-              console.warn(e);
-            }
-          }
         }
-
-        this.updateSize();
       }
     }
+  }
+
+  async loadTitle() {
+    const url = this.oembedPrefix + this.url;
+    const resp = await fetch(`w/${this.collId}/id_/${url}`);
+    const text = await resp.text();
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    const title = doc.documentElement.innerText.trim();
+
+    const ts = this.lastTs;
+
+    const req = {url, ts, title};
+
+    // update title in wacz
+    await fetch(`w/api/c/${this.collId}/pageTitle`, {method: "POST", body: JSON.stringify(req)});
+
+    return title;
   }
 
   async onUpload() {
@@ -439,13 +449,12 @@ export default class LiveWebRecorder extends LitElement
     //const title = this.lastTitle;
     this.uploadProgress = 0;
 
-    //const cid = await storage.uploadWACZ(this.oembedPrefix + url, ts, `w/api/c/${this.collId}/dl?pages=all&format=wacz`, (size) => {
-    //  this.uploadProgress = this.size ? Math.round(100.0 * size / this.size) : 0;
     //});
+    const pageTitle = `Archived Tweet: ${await this.loadTitle()}`;
 
     const result = await this.ipfsAdd((size) => {
       this.uploadProgress = this.size ? Math.round(100.0 * size / this.size) : 0;
-    });
+    }, {pageTitle});
 
     const { cid } = result;
 
@@ -457,7 +466,7 @@ export default class LiveWebRecorder extends LitElement
     this.uploading = false;
   }
 
-  ipfsAdd(progressCallback) {
+  ipfsAdd(progressCallback, {pageTitle} = {}) {
     let pc;
 
     const p = new Promise((resolve, reject) => pc = {resolve, reject});
@@ -492,12 +501,12 @@ export default class LiveWebRecorder extends LitElement
     const replayOpts = {
       showEmbed: true,
       replayBaseUrl: RWP_PREFIX,
-      pageTitle: "Archived Tweet",
+      pageTitle: pageTitle || "Archived Tweet",
       pageUrl: "page:0",
       loading: "eager",
       gzip: false,
       customSplits: true
-    }
+    };
 
 
     fetch(`w/api/c/${this.collId}/ipfs`, {
@@ -540,25 +549,6 @@ export default class LiveWebRecorder extends LitElement
 
 function randomId() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-function tsToDateMin(ts) {
-  if (!ts) {
-    return "";
-  }
-
-  if (ts.length < 14) {
-    ts += "00000101000000".substr(ts.length);
-  }
-
-  const datestr = (ts.substring(0, 4) + "-" +
-    ts.substring(4, 6) + "-" +
-    ts.substring(6, 8) + " " +
-    ts.substring(8, 10) + ":" +
-    ts.substring(10, 12) + ":" +
-    ts.substring(12, 14));
-
-  return datestr;
 }
 
 customElements.define("live-web-proxy", LiveWebRecorder);
