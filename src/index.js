@@ -503,7 +503,7 @@ export default class LiveWebRecorder extends LitElement
       replayBaseUrl: RWP_PREFIX,
       pageTitle: pageTitle || "Archived Tweet",
       pageUrl: "page:0",
-      loading: "eager",
+      //loading: "eager",
       gzip: false,
       customSplits: true
     };
