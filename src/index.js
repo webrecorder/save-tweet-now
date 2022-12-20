@@ -78,7 +78,7 @@ export default class LiveWebRecorder extends LitElement
 
     this.showAbout = window.location.search === "?about";
 
-    this.getPublicKey();
+    //this.getPublicKey();
 
     window.addEventListener("message", (event) => this.onReplayMessage(event));
     this.initSW();
@@ -101,19 +101,7 @@ export default class LiveWebRecorder extends LitElement
       this.deleteColl(this.collId);
     });
 
-    this.sizeUpdateId = setInterval(() => this.updateSize(), 5000);
-  }
-
-  async getPublicKey() {
-    try {
-      const resp = await fetch("w/api/publicKey");
-      const json = await resp.json();
-      if (json.publicKey) {
-        this.publicKey = json.publicKey;
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    this.sizeUpdateId = setInterval(() => this.updateSize(), 3000);
   }
 
   handleHashChange(q) {
@@ -130,9 +118,18 @@ export default class LiveWebRecorder extends LitElement
     if (!this.collId) {
       return;
     }
+
     const resp = await fetch(`w/api/c/${this.collId}`);
     const json = await resp.json();
+
+    const lastSize = this.size;
     this.size = json.size;
+
+    // still loading
+    if (lastSize !== json.size) {
+      return;
+    }
+
     if (this.isDone || this.uploading) {
       return;
     }
@@ -141,15 +138,28 @@ export default class LiveWebRecorder extends LitElement
       clearTimeout(this.waitForDoneId);
     }
 
-    this.waitForDoneId = setTimeout(() => {
-      if (this.size > 1000000) {
-        this.markAsDone();
+    this.waitForDoneId = setTimeout(async () => {
+      if (this.size < 1000000) {
+        return;
       }
-    }, 2000);
+
+      const resp = await fetch(`w/api/c/${this.collId}/recPending`);
+      const json = await resp.json();
+
+      if (json.numPending !== 0) {
+        console.log("waiting for completion:", json);
+        return;
+      }
+
+      this.markAsDone();
+    }, 1000);
   }
 
-  markAsDone() {
+  async markAsDone() {
     this.isDone = true;
+
+    await this.updateSize();
+
     if (this.autoupload) {
       this.onUpload();
     }
@@ -314,7 +324,7 @@ export default class LiveWebRecorder extends LitElement
     <div class="mt-3 font-semibold text-[1.25rem] leading-none">Tweet Archived!</div>
       ${this.renderSize()}
       <div class="mt-3 leading-tight break-all text-center">
-        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" @click="${this.onDownload}" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
+        <a href="w/api/c/${this.collId}/dl?pages=all&format=wacz" target="_blank" class="text-blue-500 hover:text-blue-600 transition-colors">
           Download Archived Tweet
         </a>
       </div>
@@ -350,11 +360,6 @@ export default class LiveWebRecorder extends LitElement
     }
     
     return "";
-  }
-
-  onDownload() {
-    setTimeout(() => this.getPublicKey(), 1000);
-    return true;
   }
 
   onShowResult(result, value) {

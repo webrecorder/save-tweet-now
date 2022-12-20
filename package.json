@@ -5,8 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.62",
-    "@webrecorder/awp-sw": "^0.1.9",
-    "@webrecorder/wabac": "^2.14.0"
+    "@webrecorder/awp-sw": "^0.2.0",
+    "@webrecorder/wabac": "^2.14.1"
   },
   "scripts": {
     "build": "webpack --mode production",
