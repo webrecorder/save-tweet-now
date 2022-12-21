@@ -1,26 +1,27 @@
-# ArchiveWeb.page Express
+# Save Tweet Now
 
-ArchiveWeb.page Express offers high-fidelity web archiving directly in the browser!
-It provides a more streamlined version of ArchiveWeb.page system without requiring a custom extension or desktop app!
+Save Tweet Now is a fork of [ArchiveWeb.page Express](https://github.com/webrecorder/express.archiveweb.page) designed for a simpler
+workflow or archiving a single embedded tweet at high-fidelity and optionally uploading to IPFS.
 
-AWP Express is designed for archiving public websites only.
 
-It currently includes:
-- Browser-based archiving of content loaded in the browser
-- Option to download WACZ file
-- Option to upload to IPFS/Filecoin via [web3.storage](https://web3.storage)
-- With version 0.2.0, the system also includes an experimental simple crawl option for visiting all links on a page automatically.
+## Usage
 
-## How it loads content
+This tool is a single-page-app that specifies the URL and whether to upload to IPFS.
+To use, simply load the home page, or specify a URL and auto-upload settings via hashtag params:
 
-Browsers are generally not able to load any websites, so a proxy must be used.
+```
+https://save-tweet-now.link/#url=https://example.com&autoupload=1
+```
+
+
+## Loading Tweets
+
+Browsers are generally not able to load any websites, so a proxy must be used to load from Twitter.
 
 The system uses [wabac-cors-proxy](https://github.com/webrecorder/wabac-cors-proxy) to proxy data from the live
 web via a Cloudflare Worker. This allows the system to load any website without browser 'cross-origin' restrictions.
 
-However, this only works with sites that are loadable through Cloudflare.
-
-All network traffic goes through the Cloudflare Worker, so this is not ideal for archiving non-public content.
+All network traffic goes through the Cloudflare Worker, so this is not ideal for archiving non-public Tweets.
 
 ## Development
 
