@@ -8,7 +8,7 @@ const PACKAGE = require("./package.json");
 const AWP_SW_PACKAGE = require("./node_modules/@webrecorder/awp-sw/package.json");
 const WARCIO_PACKAGE = require("./node_modules/warcio/package.json");
 
-const WEB3_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDREMEMxYjlCNzdDOTYxMTA4NkU2NDMzOTI0NDM3Rjc1MGRBNjVlNTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NDYyOTExMjU3MzAsIm5hbWUiOiJhd3BleHByZXNzIn0.oxSNKwda3IhOxfyjaq8Jva7RblPilsPMa9vV8bkzWVI";
+const WEB3_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGMzRTNCY0UzMWUyMmZhMUFlMDc3NUIwMkREQTA0OTA4ZDI3MUM2ZjEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzM0NjgxMzIyNjAsIm5hbWUiOiJQaW4gVHdlZXQgdG8gSVBGUyJ9.KhAk_d6DyIfFisForvU-2mf2fa9GT8BU1py1vtCxCGs";
 
 const TOKEN = process.env.TOKEN || WEB3_STORAGE_TOKEN;
 
