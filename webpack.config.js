@@ -44,7 +44,7 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.BannerPlugin(`[name].js is part of Webrecorder project. Copyright (C) 2020-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.`),
+    new webpack.BannerPlugin(`[name].js is part of Webrecorder project. Copyright (C) 2022-${new Date().getFullYear()}, Webrecorder Software. Licensed under the Affero General Public License v3.`),
     new webpack.NormalModuleReplacementPlugin(
         /^node:*/,
         (resource) => {
